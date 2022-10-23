@@ -5,6 +5,8 @@ A Discord bot.
 1. First, create an `desuko.yaml`:
 ```yaml
 token: YOUR_DISCORD_BOT_TOKEN_HERE
+debug_guilds:
+ - ...
 modules:
  - ...
 ```
