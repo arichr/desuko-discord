@@ -8,23 +8,28 @@ logger = logging.getLogger(__name__)
 class Loader:
     """Post loader of Desuko modules."""
 
-    def __init__(self, modules: dict = None, config: dict = None):
-        r"""Initialize a loader.
+    def __init__(self, create_group_def: Callable, modules: dict, config: dict):
+        """Initialize a loader.
 
         Args:
             modules (dict): Loaded modules
-            config (dict): Config for modules. Defaults to \{\}
+            config (dict): Config for modules
+            create_group_def (Callable): `Bot.create_group` function
         """
+        self.__create_group_def = create_group_def
         self.modules = modules if modules else {}
         self.config = config if config else {}
 
-        self.shared_memory = {'foo': 'bar'}
+        self.shared_memory = {}
         self.registered_handlers = {}
 
     def init_modules(self) -> None:
         """Initialize the provided modules."""
         for module_name, module in self.modules.items():
-            self.modules[module_name] = module['class'](self)
+            discord_module_name = ''.join(i for i in module_name if i.isalpha())
+            discord_module_name = discord_module_name[:32]
+            module_cmd_group = self.__create_group_def(discord_module_name, module['desc'])
+            self.modules[module_name] = module['class'](self, module_cmd_group)
 
     def handler(self, func: Callable) -> Callable:
         """Register a function as a handler.

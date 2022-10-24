@@ -22,13 +22,14 @@ logging.basicConfig(
     format='%(asctime)23s | %(levelname)8s | %(message)s',
     level=logging.INFO,
 )
+logging.getLogger('discord').setLevel(logging.WARNING)
 
 try:
     with open(BASE_DIR / 'desuko.yaml', 'rb') as yaml_f:
         CONFIG = safe_load(yaml_f)
 
     if CONFIG.get('config_file'):
-        logging.info('Found configuration re-direct.')
+        logging.info('Found configuration re-direct')
         with open(BASE_DIR / CONFIG['config_file'], 'rb') as yaml_f:
             CONFIG = safe_load(yaml_f)
 except IOError:
@@ -71,6 +72,6 @@ for module_name in CONFIG['modules'].keys():
         logging.critical('Unable to import %s. Abort.', module_name)
         sys.exit(1)
 
-logging.warning('Loaded %d modules.', len(modules))
+logging.warning('Loaded %d modules', len(modules))
 
 DesukoBot(CONFIG, modules).run()
