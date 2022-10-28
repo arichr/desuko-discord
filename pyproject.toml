@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "desuko"
 version = "0.1.0"
-description = "Discord bot."
+description = "An extensible Discord bot, written in Python & Pycord."
 authors = ["Arisu Wonderland <arisuchr@riseup.net>"]
 license = "MIT"
 
@@ -13,9 +13,29 @@ py-cord = "^2.2.2"
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.16.1"
 pylint = "^2.15.0"
+portray = "^1.7.0"
 
 [tool.isort]
 line_length=100
+
+[tool.portray.mkdocs]
+repo_url = ""
+repo_name = ""
+edit_uri = ""
+
+[[tool.portray.mkdocs.nav]]
+Home = "README.md"
+
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav."Getting started"]]
+    "1. Installation" = "docs/getting_started/1_Installation.md"
+
+    [[tool.portray.mkdocs.nav."Getting started"]]
+    "2. Configuration" = "docs/getting_started/2_Configuration.md"
+
+[tool.portray.mkdocs.theme]
+name = "material"
+palette = {primary = "cyan", accent = "pink"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

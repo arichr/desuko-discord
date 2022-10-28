@@ -1,15 +1,14 @@
 # Desuko
-A Discord bot.
+Desuko is an extensible Discord bot, written in Python & Pycord.
 
-## How to use
-1. First, create an `desuko.yaml`:
-```yaml
-token: YOUR_DISCORD_BOT_TOKEN_HERE
-debug_guilds:
- - ...
-modules:
- - ...
-```
-2. Replace `YOUR_DISCORD_BOT_TOKEN_HERE` with your actual token.
-3. Install dependencies and missing Desuko modules
-4. Run Desuko as a Python module: `python -m desuko`
+**Features:**
+
+* **Hackable**: Desuko aims to keep the code clean and intuitive.
+* **Extensible**: Desuko can be extended by various modules.
+* **Fully configurable**: Everything can be configured via YAML.
+* **Async-friendly**: Desuko support asyncronious functions out of the box.
+
+## Getting started
+1. [Installation](/docs/getting_started/1_Installation/) - Install & run a basic version of Desuko.
+2. Configuration - Configurate your Desuko using `desuko.yaml`.
+3. Modules - Extend the functionality with Python modules.
