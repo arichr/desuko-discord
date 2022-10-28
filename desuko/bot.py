@@ -23,22 +23,24 @@ class DesukoBot:
             auto_sync_commands=False,
             debug_guilds=self.config.get('debug_guilds'),
         )
-        self.bot.event(self.on_ready)
+        self.loader = Loader(self.bot.create_group, self.config['modules'], modules)
 
-        self.loader = Loader(self.bot.create_group, modules, self.config)
         self.register_slash = self.loader.handler(self._register_slash)
+        self.on_ready = self.loader.handler(
+            self._on_ready, return_async=True, spoof_name='on_ready',
+        )
 
         self.loader.init_modules()
+        self.bot.event(self.on_ready)
 
     def _register_slash(self) -> None:
         """Register slash commands."""
         self.bot.slash_command(description='Say hello!')(self.hello)
 
-    async def on_ready(self):
+    async def _on_ready(self):
         """Desuko is connected to Discord successfully."""
-        logger.warning('We have logged in as %s', self.bot.user)
         await self.bot.sync_commands()
-        logger.info('Synced comamnds')
+        logger.warning('Ready to go! We have logged in as %s.', self.bot.user)
 
     async def hello(self, ctx):
         """Hello command.
