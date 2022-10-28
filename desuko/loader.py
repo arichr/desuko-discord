@@ -36,15 +36,14 @@ class Loader:
                 self.__config[module_name],
             )
 
-    def handler(self, func: Callable, return_async=False, spoof_name: str = None) -> Callable:
+    def handler(self, func: Callable, return_async=False) -> Callable:
         """Register a function as a handler.
 
         If `bool(return_async) == False`, all subscribers will be treated as non-synchronous.
 
         Args:
             func (Callable): Callable as an Desuko handler
-            return_async (bool): Should the function return an asyncronious Callable.
-            spoof_name (str): Mask the name of the returned function.
+            return_async (bool): Should the function return an asyncronious Callable
 
         Returns:
             Callable: Registred function
@@ -103,10 +102,7 @@ class Loader:
         self.registered_handlers[key] = set()
         logger.info('Handler added: %s', key)
 
-        handler = async_handle_subscribers if return_async else handle_subscribers
-        if spoof_name:
-            handler.__name__ = spoof_name
-        return handler
+        return async_handle_subscribers if return_async else handle_subscribers
 
     def subscribe(self, handler: str, func: Callable) -> None:
         """Return a function to register a subscriber.

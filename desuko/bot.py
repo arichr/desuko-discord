@@ -26,16 +26,30 @@ class DesukoBot:
         self.loader = Loader(self.bot.create_group, self.config['modules'], modules)
 
         self.register_slash = self.loader.handler(self._register_slash)
-        self.on_ready = self.loader.handler(
-            self._on_ready, return_async=True, spoof_name='on_ready',
-        )
+        self.prepare_bot = self.loader.handler(self._prepare_bot)
+        self.on_ready = self.loader.handler(self._on_ready, return_async=True)
+        self.shutdown = self.loader.handler(self._shutdown)
 
         self.loader.init_modules()
-        self.bot.event(self.on_ready)
+        self.bot.listen('on_ready')(self.on_ready)
 
     def _register_slash(self) -> None:
         """Register slash commands."""
         self.bot.slash_command(description='Say hello!')(self.hello)
+
+    def _prepare_bot(self) -> None:
+        """Prepare bot before running.
+
+        This function exists only to handle its subscribers. By using it, we ensure,
+        that Desuko is completely loaded.
+        """
+
+    def _shutdown(self) -> None:
+        """Gracefully shutdown the bot.
+
+        This function exists only to handle its subscribers. By using it, we ensure,
+        that Desuko is closed correctly.
+        """
 
     async def _on_ready(self):
         """Desuko is connected to Discord successfully."""
@@ -55,4 +69,6 @@ class DesukoBot:
     def run(self) -> None:
         """Run the Discord bot."""
         self.register_slash()
+        self.prepare_bot()
         self.bot.run(self.config['token'])
+        self.shutdown()
