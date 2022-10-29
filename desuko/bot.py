@@ -41,7 +41,7 @@ class DesukoBot:
         """Prepare bot before running.
 
         This function exists only to handle its subscribers. By using it, we ensure,
-        that Desuko is completely loaded.
+        that Desuko is completely loaded (in terms of modules).
         """
 
     def _shutdown(self) -> None:
@@ -50,6 +50,7 @@ class DesukoBot:
         This function exists only to handle its subscribers. By using it, we ensure,
         that Desuko is closed correctly.
         """
+        logger.warning('Graceful shutdown initiated. Please wait...')
 
     async def _on_ready(self):
         """Desuko is connected to Discord successfully."""
@@ -71,4 +72,4 @@ class DesukoBot:
         self.register_slash()
         self.prepare_bot()
         self.bot.run(self.config['token'])
-        self.shutdown()
+        # TODO: Implement shutdown initiated by modules

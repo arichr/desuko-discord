@@ -19,22 +19,30 @@ class Loader:
         """
         self.__create_group_def = create_group_def
         self.__config = config if config else {}
-        self.modules = modules if modules else {}
+        self.__registered_handlers = {}
 
+        self.__modules = modules if modules else {}
         self.shared_memory = {}
-        self.registered_handlers = {}
+
+        self.__is_initialized = False
 
     def init_modules(self) -> None:
         """Initialize the provided modules."""
-        for module_name, module in self.modules.items():
+        if self.__is_initialized:
+            logger.warning('Attempt to initialize modules twice.')
+            return
+
+        for module_name, module in self.__modules.items():
             discord_module_name = ''.join(i for i in module_name if i.isalpha())[:32]
             module_cmd_group = self.__create_group_def(discord_module_name, module['desc'])
 
-            self.modules[module_name] = module['class'](
+            self.__modules[module_name] = module['class'](
                 self,
                 module_cmd_group,
                 self.__config[module_name],
             )
+
+        self.__is_initialized = True
 
     def handler(self, func: Callable, return_async=False) -> Callable:
         """Register a function as a handler.
@@ -67,7 +75,7 @@ class Loader:
                 Any: Any result from the provided function (NOT its subscribers)
             """
             result = func(*args, **kwargs)
-            for subscriber, is_sub_async in self.registered_handlers[key]:
+            for subscriber, is_sub_async in self.__registered_handlers[key]:
                 if is_sub_async:
                     logger.warning(
                         '%s.%s is an asyncronious function, that was registered as synchronous.',
@@ -92,14 +100,14 @@ class Loader:
             else:
                 result = func(*args, **kwargs)
 
-            for subscriber, is_sub_async in self.registered_handlers[key]:
+            for subscriber, is_sub_async in self.__registered_handlers[key]:
                 if is_sub_async:
                     await subscriber(*args, **kwargs)
                 else:
                     subscriber(*args, **kwargs)
             return result
 
-        self.registered_handlers[key] = set()
+        self.__registered_handlers[key] = set()
         logger.info('Handler added: %s', key)
 
         return async_handle_subscribers if return_async else handle_subscribers
@@ -115,7 +123,7 @@ class Loader:
             ValueError: Provided invalid handler
         """
         try:
-            self.registered_handlers[handler].add((func, inspect.iscoroutinefunction(func)))
+            self.__registered_handlers[handler].add((func, inspect.iscoroutinefunction(func)))
         except KeyError as exc:
             raise ValueError(f'{exc.args[0]} is not a valid handler.') from exc
         logger.info('Subscriber added: %s.%s -> %s', func.__module__, func.__name__, handler)
