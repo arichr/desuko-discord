@@ -1,4 +1,4 @@
-"""Desuko - Discord bot.
+"""Desuko - An extensible Discord bot, written in Python & Pycord.
 
 ## How is it structured?
 Desuko aims to be modular. It has a base package implemented here and modules

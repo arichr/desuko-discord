@@ -50,7 +50,7 @@ class Loader:
         If `bool(return_async) == False`, all subscribers will be treated as non-synchronous.
 
         Args:
-            func (Callable): Callable as an Desuko handler
+            func (Callable): Callable as a Desuko handler
             return_async (bool): Should the function return an asyncronious Callable
 
         Returns:

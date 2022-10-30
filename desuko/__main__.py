@@ -1,11 +1,11 @@
-"""Desuko - Discord bot.
+"""Desuko - An extensible Discord bot, written in Python & Pycord.
 
-How is it structured?
-    Desuko aims to be modular. It has a base package implemented here and modules
-    to extend its functionality.
+## How is it structured?
+Desuko aims to be modular. It has a base package implemented here and modules
+to extend its functionality.
 
-    To make changes into Desuko code, please, make sure that your edits will NOT
-    break any existing modules.
+To make changes into Desuko code, please, make sure that your edits will **not** break
+any existing modules.
 """
 import logging
 import sys
@@ -38,7 +38,7 @@ except IOError:
 
 
 def load_module(name: str) -> dict:
-    """Load an Desuko Python module.
+    """Load a Desuko Python module.
 
     Args:
         name (str): Name of a submodule (e.g. `desuko.modules.foo_bar`)
