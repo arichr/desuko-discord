@@ -18,11 +18,6 @@ portray = "^1.7.0"
 [tool.isort]
 line_length=100
 
-[tool.portray.mkdocs]
-repo_url = ""
-repo_name = ""
-edit_uri = ""
-
 [[tool.portray.mkdocs.nav]]
 Home = "README.md"
 
@@ -32,6 +27,10 @@ Home = "README.md"
 
     [[tool.portray.mkdocs.nav."Getting started"]]
     "2. Configuration" = "docs/getting_started/2_Configuration.md"
+
+[[tool.portray.mkdocs.nav]]
+    [[tool.portray.mkdocs.nav.Development]]
+    "Hello, Desuko!" = "docs/modules/Development/HelloDesuko.md"
 
 [tool.portray.mkdocs.theme]
 name = "material"
