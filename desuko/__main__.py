@@ -37,11 +37,11 @@ except IOError:
     sys.exit(1)
 
 
-def load_module(name: str) -> dict:
+def load_module(import_path: str) -> dict:
     """Load a Desuko Python module.
 
     Args:
-        name (str): Name of a submodule (e.g. `desuko.modules.foo_bar`)
+        import_path (str): Import path of a module (e.g. `desuko_foo_bar`)
 
     Returns:
         dict: Information about the module
@@ -51,26 +51,27 @@ def load_module(name: str) -> dict:
         ModuleNotFoundError: Configuration requires non-existing modules
     """
     try:
-        module = import_module(f'desuko.modules.{name}')
+        module = import_module(import_path)
         return {
-            'desc': module.__DESC__,
-            'version': module.__VERSION__,
-            'class': module.Module,
+            module.__NAME__: {
+                'desc': module.__DESC__,
+                'version': getattr(module, '__VERSION__', 'Stable'),
+                'config': CONFIG['modules'][import_path],
+                'class': module.Module,
+                'import_path': import_path,
+            },
         }
     except (AttributeError, ModuleNotFoundError) as exc:
         if CONFIG.get('silence_import_exceptions'):
-            return {}
+            logging.critical('Unable to import %s. Abort.', import_path)
+            sys.exit(1)
 
         raise exc
 
 
 modules = {}
-
-for module_name in CONFIG['modules'].keys():
-    modules[module_name] = load_module(module_name)
-    if not modules[module_name]:
-        logging.critical('Unable to import %s. Abort.', module_name)
-        sys.exit(1)
+for module_import_path in CONFIG['modules'].keys():
+    modules.update(load_module(module_import_path))
 
 logging.warning('Loaded %d modules', len(modules))
 

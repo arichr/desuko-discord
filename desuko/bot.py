@@ -23,7 +23,7 @@ class DesukoBot:
             auto_sync_commands=False,
             debug_guilds=self.config.get('debug_guilds'),
         )
-        self.loader = Loader(self.bot.create_group, self.config['modules'], modules)
+        self.loader = Loader(self.bot.create_group, modules)
 
         self.register_slash = self.loader.handler(self._register_slash)
         self.prepare_bot = self.loader.handler(self._prepare_bot)

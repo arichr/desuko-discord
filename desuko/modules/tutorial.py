@@ -1,10 +1,10 @@
 """'Hello, World' module for Desuko."""
 import discord
 
-from desuko.loader import Loader  # pylint: disable=import-error
+from desuko.loader import Loader
 
+__NAME__ = 'tutorial'
 __DESC__ = '"Hello, World" module for Desuko'
-__VERSION__ = '0.1.0'
 
 
 class Module:

@@ -9,22 +9,20 @@ logger = logging.getLogger(__name__)
 class Loader:
     """Post loader of Desuko modules."""
 
-    def __init__(self, create_group_def: Callable, config: dict, modules: dict):
+    def __init__(self, create_group_def: Callable, modules: dict):
         """Initialize a loader.
 
         Args:
             create_group_def (Callable): `Bot.create_group` function
-            config (dict): Config for modules
             modules (dict): Loaded modules
         """
         self.__create_group_def = create_group_def
-        self.__config = config if config else {}
-        self.__registered_handlers = {}
-
         self.__modules = modules if modules else {}
-        self.shared_memory = {}
 
+        self.__registered_handlers = {}
         self.__is_initialized = False
+
+        self.shared_memory = {}
 
     def init_modules(self) -> None:
         """Initialize the provided modules."""
@@ -34,13 +32,15 @@ class Loader:
 
         for module_name, module in self.__modules.items():
             discord_module_name = ''.join(i for i in module_name if i.isalpha())[:32]
+            if not discord_module_name:
+                logger.warning(
+                    '%s was SKIPPED. (Reason: Invalid __NAME__ value)', module['import_path'],
+                )
+                continue
+
             module_cmd_group = self.__create_group_def(discord_module_name, module['desc'])
 
-            self.__modules[module_name] = module['class'](
-                self,
-                module_cmd_group,
-                self.__config[module_name],
-            )
+            module['class'](self, module_cmd_group, module['config'])
 
         self.__is_initialized = True
 
