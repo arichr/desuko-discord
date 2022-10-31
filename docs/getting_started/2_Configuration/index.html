@@ -276,39 +276,9 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          2. Configuration
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         2. Configuration
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#modules" class="md-nav__link">
-    Modules
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -497,21 +467,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#modules" class="md-nav__link">
-    Modules
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -534,10 +489,8 @@
 <li><strong>token</strong> (<code>str</code>; <strong>Required</strong>): Token of your Discord bot</li>
 <li><strong>debug_guilds</strong> (<code>Iterable[int]</code>; Optional): Debug guilds (updates slash commands only for specified guilds). Defaults to <code>[]</code>.</li>
 <li><strong>silence_import_exceptions</strong> (<code>bool</code>; Optional): Should import failures be handled automatically or leave them as-is? Defaults to <code>True</code>.</li>
-<li><strong>modules</strong> (<code>dict[str, Any]</code>; Optional): Modules to extend a Desuko functionality. Defaults to <code>{}</code>.</li>
+<li><strong>modules</strong> (<code>dict[str, Any]</code>; Optional): Modules to extend a Desuko functionality. Keys of this <code>dict</code> are <strong>valid</strong> import paths, but values can differ. Defaults to <code>{}</code>.</li>
 </ul>
-<h2 id="modules">Modules</h2>
-<p>Modules can differ one from another. So their configuration styles. To see possible options, refer to their own documentation pages.</p>
                 
               
               

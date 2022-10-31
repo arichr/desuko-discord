@@ -484,9 +484,9 @@
                 
                 <h1 id="hello-desuko">Hello, Desuko!</h1>
 <p>Let's make a simple module for Desuko and walk you through it.</p>
-<p><em>desuko/modules/tutorial.py</em>:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">__DESC__</span> <span class="o">=</span> <span class="s1">&#39;&quot;Hello, World&quot; module for Desuko&#39;</span>
-<span class="n">__VERSION__</span> <span class="o">=</span> <span class="s1">&#39;0.1.0&#39;</span>
+<p><em>tutorial.py</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">__NAME__</span> <span class="o">=</span> <span class="s1">&#39;tutorial&#39;</span>
+<span class="n">__DESC__</span> <span class="o">=</span> <span class="s1">&#39;&quot;Hello, World&quot; module for Desuko&#39;</span>
 
 <span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">slash_group</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -507,16 +507,16 @@
 
 <p>Let's explain what we did here step-by-step:</p>
 <ol>
-<li>On the first lines we provide a module metadata. Having these variables is <strong>required</strong> due to their usage for debugging purposes.</li>
+<li>On the first lines we provide a name for a Discord slash group and a module description. Having these variables is <strong>required</strong>.</li>
 <li>Next, we create a <code>Module</code> class. It represents our main entry.</li>
 <li>Then we provide an <code>__init__()</code> function to set attributes and bind class functions with handlers.</li>
 <li><code>register_slash()</code> registers all our functions as Discord slash commands.</li>
-<li>Finally, <code>desuko()</code> is an actual Discord command. Its corresponding name will be <code>/tutorial desuko</code> (<code>/&lt;module name&gt; &lt;func name&gt;</code>).</li>
+<li>Finally, <code>desuko()</code> is an actual Discord command. Its corresponding name will be <code>/tutorial desuko</code> (<code>/&lt;__NAME__&gt; &lt;func name&gt;</code>).</li>
 </ol>
 <p>To connect it with a Desuko bot, simply provide the module name in <code>desuko.yaml</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The names of the <code>Module</code> class, <code>__DESC__</code> and <code>__VERSION__</code> should <strong>not</strong> change. Loader tries to find exactly these names.</p>
+<p>The names of the <code>Module</code> class, <code>__NAME__</code> and <code>__DESC__</code> should <strong>not</strong> change. Loader tries to find exactly these names.</p>
 </div>
 <p><strong>Result:</strong></p>
 <p><img alt="Result in Discord" src="../files/HelloDesukoExample.gif" /></p>

@@ -656,7 +656,7 @@
 
     <span class="sd">&quot;&quot;&quot;Post loader of Desuko modules.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">create_group_def</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">modules</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">create_group_def</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">modules</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;Initialize a loader.</span>
 
@@ -664,23 +664,19 @@
 
 <span class="sd">            create_group_def (Callable): `Bot.create_group` function</span>
 
-<span class="sd">            config (dict): Config for modules</span>
-
 <span class="sd">            modules (dict): Loaded modules</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__create_group_def</span> <span class="o">=</span> <span class="n">create_group_def</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__config</span> <span class="o">=</span> <span class="n">config</span> <span class="k">if</span> <span class="n">config</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__modules</span> <span class="o">=</span> <span class="n">modules</span> <span class="k">if</span> <span class="n">modules</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__registered_handlers</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__modules</span> <span class="o">=</span> <span class="n">modules</span> <span class="k">if</span> <span class="n">modules</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__is_initialized</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">shared_memory</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">__is_initialized</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">init_modules</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -696,17 +692,19 @@
 
             <span class="n">discord_module_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">module_name</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">isalpha</span><span class="p">())[:</span><span class="mi">32</span><span class="p">]</span>
 
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">discord_module_name</span><span class="p">:</span>
+
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+
+                    <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> was SKIPPED. (Reason: Invalid __NAME__ value)&#39;</span><span class="p">,</span> <span class="n">module</span><span class="p">[</span><span class="s1">&#39;import_path&#39;</span><span class="p">],</span>
+
+                <span class="p">)</span>
+
+                <span class="k">continue</span>
+
             <span class="n">module_cmd_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_group_def</span><span class="p">(</span><span class="n">discord_module_name</span><span class="p">,</span> <span class="n">module</span><span class="p">[</span><span class="s1">&#39;desc&#39;</span><span class="p">])</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">__modules</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">](</span>
-
-                <span class="bp">self</span><span class="p">,</span>
-
-                <span class="n">module_cmd_group</span><span class="p">,</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="p">[</span><span class="n">module_name</span><span class="p">],</span>
-
-            <span class="p">)</span>
+            <span class="n">module</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">](</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_cmd_group</span><span class="p">,</span> <span class="n">module</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__is_initialized</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -854,7 +852,6 @@
 <h3 id="loader">Loader</h3>
 <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Loader</span><span class="p">(</span>
     <span class="n">create_group_def</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">modules</span><span class="p">:</span> <span class="nb">dict</span>
 <span class="p">)</span>
 </code></pre></div>
@@ -865,7 +862,7 @@
 
 <span class="w">    </span><span class="ss">&quot;&quot;&quot;Post loader of Desuko modules.&quot;&quot;&quot;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="nl">create_group_def</span><span class="p">:</span><span class="w"> </span><span class="n">Callable</span><span class="p">,</span><span class="w"> </span><span class="nl">config</span><span class="p">:</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="nl">modules</span><span class="p">:</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="nl">create_group_def</span><span class="p">:</span><span class="w"> </span><span class="n">Callable</span><span class="p">,</span><span class="w"> </span><span class="nl">modules</span><span class="p">:</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
 
 <span class="w">        </span><span class="ss">&quot;&quot;&quot;Initialize a loader.</span>
 
@@ -873,23 +870,19 @@
 
 <span class="ss">            create_group_def (Callable): `Bot.create_group` function</span>
 
-<span class="ss">            config (dict): Config for modules</span>
-
 <span class="ss">            modules (dict): Loaded modules</span>
 
 <span class="ss">        &quot;&quot;&quot;</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__create_group_def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">create_group_def</span><span class="w"></span>
 
-<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="err">{}</span><span class="w"></span>
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__modules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modules</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">modules</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="err">{}</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__registered_handlers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{}</span><span class="w"></span>
 
-<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__modules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modules</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">modules</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="err">{}</span><span class="w"></span>
+<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__is_initialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">False</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">shared_memory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{}</span><span class="w"></span>
-
-<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__is_initialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">False</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">init_modules</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">None</span><span class="err">:</span><span class="w"></span>
 
@@ -905,17 +898,19 @@
 
 <span class="w">            </span><span class="n">discord_module_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">.</span><span class="k">join</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">module_name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">isalpha</span><span class="p">())</span><span class="o">[</span><span class="n">:32</span><span class="o">]</span><span class="w"></span>
 
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nl">discord_module_name</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">logger</span><span class="p">.</span><span class="n">warning</span><span class="p">(</span><span class="w"></span>
+
+<span class="w">                    </span><span class="s1">&#39;%s was SKIPPED. (Reason: Invalid __NAME__ value)&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">module</span><span class="o">[</span><span class="n">&#39;import_path&#39;</span><span class="o">]</span><span class="p">,</span><span class="w"></span>
+
+<span class="w">                </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">                </span><span class="k">continue</span><span class="w"></span>
+
 <span class="w">            </span><span class="n">module_cmd_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">__create_group_def</span><span class="p">(</span><span class="n">discord_module_name</span><span class="p">,</span><span class="w"> </span><span class="k">module</span><span class="o">[</span><span class="n">&#39;desc&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">            </span><span class="n">self</span><span class="p">.</span><span class="n">__modules</span><span class="o">[</span><span class="n">module_name</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">module</span><span class="o">[</span><span class="n">&#39;class&#39;</span><span class="o">]</span><span class="p">(</span><span class="w"></span>
-
-<span class="w">                </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
-
-<span class="w">                </span><span class="n">module_cmd_group</span><span class="p">,</span><span class="w"></span>
-
-<span class="w">                </span><span class="n">self</span><span class="p">.</span><span class="n">__config</span><span class="o">[</span><span class="n">module_name</span><span class="o">]</span><span class="p">,</span><span class="w"></span>
-
-<span class="w">            </span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">module</span><span class="o">[</span><span class="n">&#39;class&#39;</span><span class="o">]</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">module_cmd_group</span><span class="p">,</span><span class="w"> </span><span class="k">module</span><span class="o">[</span><span class="n">&#39;config&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__is_initialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">True</span><span class="w"></span>
 
@@ -1228,33 +1223,35 @@
 <p>Initialize the provided modules.</p>
 <details class="example">
 <summary>View Source</summary>
-<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">init_modules</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">None</span><span class="err">:</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">init_modules</span><span class="p">(</span><span class="kr">self</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">None</span><span class="o">:</span><span class="w"></span>
 
-<span class="w">        </span><span class="ss">&quot;&quot;&quot;Initialize the provided modules.&quot;&quot;&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;&quot;&quot;Initialize the provided modules.&quot;&quot;&quot;</span><span class="w"></span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nl">__is_initialized</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nf">if</span><span class="w"> </span><span class="kr">self</span><span class="p">.</span><span class="n">__is_initialized</span><span class="o">:</span><span class="w"></span>
 
-<span class="w">            </span><span class="n">logger</span><span class="p">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Attempt to initialize modules twice.&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">logger</span><span class="p">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Attempt to initialize modules twice.&#39;</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">            </span><span class="k">return</span><span class="w"></span>
+<span class="w">            </span><span class="kr">return</span><span class="w"></span>
 
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="n">module_name</span><span class="p">,</span><span class="w"> </span><span class="k">module</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">__modules</span><span class="p">.</span><span class="n">items</span><span class="p">()</span><span class="err">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">for</span><span class="w"> </span><span class="n">module_name</span><span class="p">,</span><span class="w"> </span><span class="kr">module</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="kr">self</span><span class="p">.</span><span class="n">__modules</span><span class="p">.</span><span class="n">items</span><span class="p">()</span><span class="o">:</span><span class="w"></span>
 
-<span class="w">            </span><span class="n">discord_module_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">.</span><span class="k">join</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">module_name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">isalpha</span><span class="p">())</span><span class="o">[</span><span class="n">:32</span><span class="o">]</span><span class="w"></span>
+<span class="w">            </span><span class="n">discord_module_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">module_name</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">isalpha</span><span class="p">())[</span><span class="o">:</span><span class="mi">32</span><span class="p">]</span><span class="w"></span>
 
-<span class="w">            </span><span class="n">module_cmd_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">__create_group_def</span><span class="p">(</span><span class="n">discord_module_name</span><span class="p">,</span><span class="w"> </span><span class="k">module</span><span class="o">[</span><span class="n">&#39;desc&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="nf">if</span><span class="w"> </span><span class="kr">not</span><span class="w"> </span><span class="n">discord_module_name</span><span class="o">:</span><span class="w"></span>
 
-<span class="w">            </span><span class="n">self</span><span class="p">.</span><span class="n">__modules</span><span class="o">[</span><span class="n">module_name</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">module</span><span class="o">[</span><span class="n">&#39;class&#39;</span><span class="o">]</span><span class="p">(</span><span class="w"></span>
+<span class="w">                </span><span class="n">logger</span><span class="p">.</span><span class="n">warning</span><span class="p">(</span><span class="w"></span>
 
-<span class="w">                </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="s">&#39;%s was SKIPPED. (Reason: Invalid __NAME__ value)&#39;</span><span class="p">,</span><span class="w"> </span><span class="kr">module</span><span class="p">[</span><span class="s">&#39;import_path&#39;</span><span class="p">],</span><span class="w"></span>
 
-<span class="w">                </span><span class="n">module_cmd_group</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="p">)</span><span class="w"></span>
 
-<span class="w">                </span><span class="n">self</span><span class="p">.</span><span class="n">__config</span><span class="o">[</span><span class="n">module_name</span><span class="o">]</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">continue</span><span class="w"></span>
 
-<span class="w">            </span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">module_cmd_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">self</span><span class="p">.</span><span class="n">__create_group_def</span><span class="p">(</span><span class="n">discord_module_name</span><span class="p">,</span><span class="w"> </span><span class="kr">module</span><span class="p">[</span><span class="s">&#39;desc&#39;</span><span class="p">])</span><span class="w"></span>
 
-<span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">__is_initialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">True</span><span class="w"></span>
+<span class="w">            </span><span class="kr">module</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">](</span><span class="kr">self</span><span class="p">,</span><span class="w"> </span><span class="n">module_cmd_group</span><span class="p">,</span><span class="w"> </span><span class="kr">module</span><span class="p">[</span><span class="s">&#39;config&#39;</span><span class="p">])</span><span class="w"></span>
+
+<span class="w">        </span><span class="kr">self</span><span class="p">.</span><span class="n">__is_initialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">True</span><span class="w"></span>
 </code></pre></div>
 
 </details>
