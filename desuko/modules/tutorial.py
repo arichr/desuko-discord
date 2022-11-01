@@ -29,6 +29,6 @@ class Module:
         """'Hello, Desuko!' command.
 
         Args:
-            ctx (ApplicationContext): Application context
+            ctx (discord.ApplicationContext): Application context
         """
         await ctx.respond('Hello, Desuko!')

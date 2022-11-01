@@ -9,15 +9,17 @@ logger = logging.getLogger(__name__)
 class Loader:
     """Post loader of Desuko modules."""
 
-    def __init__(self, create_group_def: Callable, modules: dict):
+    def __init__(self, bot, create_group_def: Callable, modules: dict):
         """Initialize a loader.
 
         Args:
+            bot (discord.Bot): Bot instance
             create_group_def (Callable): `Bot.create_group` function
             modules (dict): Loaded modules
         """
         self.__create_group_def = create_group_def
         self.__modules = modules if modules else {}
+        self.bot = bot
 
         self.__registered_handlers = {}
         self.__is_initialized = False
