@@ -1,4 +1,6 @@
 # Desuko
+[![repo style: chr](https://img.shields.io/badge/repo%20style-chr-blueviolet?logo=github&style=flat)](https://github.com/arichr/python-template)
+
 Desuko is an extensible Discord bot, written in Python & Pycord.
 
 **Features:**
@@ -17,3 +19,4 @@ Desuko is an extensible Discord bot, written in Python & Pycord.
 **Modules:**
 
 1. [Hello, Desuko!](https://arichr.github.io/desuko-discord/docs/modules/Development/HelloDesuko/) - "Hello, World!" module for Desuko
+2. [Handlers and subscribers](https://arichr.github.io/desuko-discord/docs/modules/Development/HandlersAndSubs/) - Handlers and subscribers usage for building event-driven bots
