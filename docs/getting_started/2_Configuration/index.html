@@ -333,6 +333,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modules/Development/HandlersAndSubs/" class="md-nav__link">
+        Handlers and subscribers
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -491,6 +505,11 @@
 <li><strong>silence_import_exceptions</strong> (<code>bool</code>; Optional): Should import failures be handled automatically or leave them as-is? Defaults to <code>True</code>.</li>
 <li><strong>modules</strong> (<code>dict[str, Any]</code>; Optional): Modules to extend a Desuko functionality. Keys of this <code>dict</code> are <strong>valid</strong> import paths, but values can differ. Defaults to <code>{}</code>.</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to place Desuko configuration elsewhere, use <strong>config_file</strong> (<code>str</code>).
+In that case, all other options in <code>desuko.yaml</code> <strong>will be ignored</strong>.</p>
+</div>
                 
               
               
