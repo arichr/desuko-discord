@@ -32,6 +32,9 @@ Home = "README.md"
     [[tool.portray.mkdocs.nav.Development]]
     "Hello, Desuko!" = "docs/modules/Development/HelloDesuko.md"
 
+    [[tool.portray.mkdocs.nav.Development]]
+    "Handlers and subscribers" = "docs/modules/Development/HandlersAndSubs.md"
+
 [tool.portray.mkdocs.theme]
 name = "material"
 palette = {primary = "cyan", accent = "pink"}
