@@ -10,13 +10,23 @@ python = "^3.8"
 PyYAML = "^6.0"
 py-cord = "^2.2.2"
 
-[tool.poetry.dev-dependencies]
-wemake-python-styleguide = "^0.16.1"
-pylint = "^2.15.0"
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
 portray = "^1.7.0"
 
+[tool.poetry.group.dev.dependencies]
+wemake-python-styleguide = "^0.16.1"
+pylint = "^2.15.0"
+
 [tool.isort]
-line_length=100
+line_length = 100
+
+[tool.portray.mkdocs]
+site_name = "Desuko"
+repo_url = "https://github.com/arichr/desuko-discord"
+edit_uri = "https://github.com/arichr/desuko-discord/blob/main/"
 
 [[tool.portray.mkdocs.nav]]
 Home = "README.md"

@@ -1,13 +1,11 @@
 # Configuration
 
-Desuko has pre-defined values to work with. However, it also provides an opportunity to use `desuko.yaml` for more precise control over things.
+Desuko can operate on its own, once the `token` value is valid and saved correctly. However, to specify more options `desuko.yaml` should be used. For now, those can be handled by Desuko out-of-the-box:
 
-For now, Desuko handles these options:
-
-* **token** (`str`; **Required**): Token of your Discord bot
-* **debug_guilds** (`Iterable[int]`; Optional): Debug guilds (updates slash commands only for specified guilds). Defaults to `[]`.
-* **silence_import_exceptions** (`bool`; Optional): Should import failures be handled automatically or leave them as-is? Defaults to `True`.
-* **modules** (`dict[str, Any]`; Optional): Modules to extend a Desuko functionality. Keys of this `dict` are **valid** import paths, but values can differ. Defaults to `{}`.
+* **token** (`str`): Token of your Discord bot
+* **debug_guilds** (`Iterable[int]`): Discord debug guilds, represented as an interable of integers.
+* **silence_import_exceptions** (`bool`): Should we fail silently on import exceptions? Defaults to `True`.
+* **modules** (`dict[str, Any]`): A dictionary of enabled modules, whose keys are valid package names and values can be anything.
 
 !!! note
     If you want to place Desuko configuration elsewhere, use **config_file** (`str`).
